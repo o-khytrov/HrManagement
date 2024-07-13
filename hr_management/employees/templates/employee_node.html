@@ -1,0 +1,10 @@
+<li>
+    {{ employee.first_name }} {{ employee.last_name }}- {{ employee.position }} - {{ employee.email }}
+    {% if employee.subordinate_list %}
+        <ul>
+            {% for subordinate in employee.subordinate_list %}
+                {% include 'employee_node.html' with employee=subordinate %}
+            {% endfor %}
+        </ul>
+    {% endif %}
+</li>
