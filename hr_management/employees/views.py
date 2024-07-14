@@ -13,16 +13,7 @@ def hierarchy_view(request):
 def load_subordinates(request, employee_id):
     employee = Employee.objects.get(pk=employee_id)
     subordinates = employee.subordinates.all().select_related('manager')
-    data = [
-        {
-            'id': sub.id,
-            'full_name': sub.full_name,
-            'position': sub.position,
-            'has_subordinates': sub.subordinates.exists()
-        }
-        for sub in subordinates
-    ]
-    return JsonResponse(data, safe=False)
+    return render(request, 'employee_node.html', {'employees': subordinates})
 
 
 def employee_list_view(request):

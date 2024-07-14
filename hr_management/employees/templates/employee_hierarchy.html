@@ -18,24 +18,18 @@
         $(document).ready(function() {
             $('#hierarchy-tree .employee').click(function() {
                 var employeeId = $(this).data('id');
-                var $subordinatesList = $(this).next('.subordinates');
-
-                if ($subordinatesList.data('loaded') === false) {
-                    $.ajax({
+                console.log(employeeId);
+                var subordinatesList = $(this).next('.subordinates');
+                $.ajax({
                         url: '/employees/load_subordinates/' + employeeId + '/',
                         method: 'GET',
                         success: function(data) {
-                            $subordinatesList.empty();
-                            data.forEach(function(subordinate) {
-                                var hasSubordinates = subordinate.has_subordinates ? '<ul class="subordinates" data-loaded="false" style="display:none;"></ul>' : '';
-                                $subordinatesList.append('<li><span data-id="' + subordinate.id + '" class="employee">' + subordinate.full_name + ' - ' + subordinate.position + ' (Depth: ' + subordinate.depth + ')</span>' + hasSubordinates + '</li>');
-                            });
-                            $subordinatesList.data('loaded', true);
+                           subordinatesList.html(data);
                         }
-                    });
-                }
-                $subordinatesList.toggle();
+                });
             });
+
+
         });
     </script>
 </body>

@@ -1,12 +1,12 @@
 <ul>
     {% for employee in employees %}
         <li>
-            <span>{{ employee.first_name }} - {{ employee.position }}</span>
-            {% if level < 7 and employee.subordinates.all %}
-                <div class="subordinates">
+            <span class="employee" data-id="{{ employee.id }}">{{ employee.first_name }} - {{ employee.position }}</span>
+            <div class="subordinates">
+            {% if level < 3 and employee.subordinates.all %}
                     {% include 'employee_node.html' with employees=employee.subordinates.all level=level|add:1 %}
-                </div>
             {% endif %}
+            </div>
         </li>
     {% endfor %}
 </ul>
