@@ -1,26 +1,42 @@
+<!-- employees/templates/employees/hierarchy.html -->
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Employee Hierarchy</title>
-    <style>
-        ul {
-            list-style-type: none;
-        }
-        li {
-            margin: 10px;
-            padding: 5px;
-        }
-    </style>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 </head>
 <body>
-    <h1>Employee Hierarchy</h1>
-    <ul>
-        {% for employee in hierarchy %}
-            {% include 'employee_node.html' with employee=employee %}
-        {% endfor %}
-    </ul>
+    <div class="container">
+        <h1>Employee Hierarchy</h1>
+        <div id="hierarchy-tree">
+            {% include 'employee_node.html' with employees=top_managers level=0 %}
+        </div>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function() {
+            $('#hierarchy-tree .employee').click(function() {
+                var employeeId = $(this).data('id');
+                var $subordinatesList = $(this).next('.subordinates');
+
+                if ($subordinatesList.data('loaded') === false) {
+                    $.ajax({
+                        url: '/employees/load_subordinates/' + employeeId + '/',
+                        method: 'GET',
+                        success: function(data) {
+                            $subordinatesList.empty();
+                            data.forEach(function(subordinate) {
+                                var hasSubordinates = subordinate.has_subordinates ? '<ul class="subordinates" data-loaded="false" style="display:none;"></ul>' : '';
+                                $subordinatesList.append('<li><span data-id="' + subordinate.id + '" class="employee">' + subordinate.full_name + ' - ' + subordinate.position + ' (Depth: ' + subordinate.depth + ')</span>' + hasSubordinates + '</li>');
+                            });
+                            $subordinatesList.data('loaded', true);
+                        }
+                    });
+                }
+                $subordinatesList.toggle();
+            });
+        });
+    </script>
 </body>
 </html>
-

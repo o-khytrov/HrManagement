@@ -1,10 +1,12 @@
-<li>
-    {{ employee.first_name }} {{ employee.last_name }}- {{ employee.position }} - {{ employee.email }}
-    {% if employee.subordinate_list %}
-        <ul>
-            {% for subordinate in employee.subordinate_list %}
-                {% include 'employee_node.html' with employee=subordinate %}
-            {% endfor %}
-        </ul>
-    {% endif %}
-</li>
+<ul>
+    {% for employee in employees %}
+        <li>
+            <span>{{ employee.first_name }} - {{ employee.position }}</span>
+            {% if level < 7 and employee.subordinates.all %}
+                <div class="subordinates">
+                    {% include 'employee_node.html' with employees=employee.subordinates.all level=level|add:1 %}
+                </div>
+            {% endif %}
+        </li>
+    {% endfor %}
+</ul>

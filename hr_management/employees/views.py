@@ -1,25 +1,30 @@
-from django.http import HttpResponse
+# employees/views.py
+from django.http import JsonResponse
 from django.shortcuts import render
+
 from .models import Employee
 
 
-def index(request):
+def hierarchy_view(request):
+    top_managers = Employee.objects.filter(manager__isnull=True)
+    return render(request, 'employee_hierarchy.html', {'top_managers': top_managers})
+
+
+def load_subordinates(request, employee_id):
+    employee = Employee.objects.get(pk=employee_id)
+    subordinates = employee.subordinates.all().select_related('manager')
+    data = [
+        {
+            'id': sub.id,
+            'full_name': sub.full_name,
+            'position': sub.position,
+            'has_subordinates': sub.subordinates.exists()
+        }
+        for sub in subordinates
+    ]
+    return JsonResponse(data, safe=False)
+
+
+def employee_list_view(request):
     employees = Employee.objects.all()
-    hierarchy = build_hierarchy(employees)
-    return render(request, 'employee_hierarchy.html', {'hierarchy': hierarchy})
-
-
-def build_hierarchy(employees):
-    employee_dict = {employee.id: employee for employee in employees}
-    hierarchy = []
-
-    for employee in employees:
-        if employee.manager_id is None:
-            hierarchy.append(employee)
-        else:
-            manager = employee_dict[employee.manager_id]
-            if not hasattr(manager, 'subordinate_list'):
-                manager.subordinate_list = []
-            manager.subordinate_list.append(employee)
-
-    return hierarchy
+    return render(request, 'employees/list.html', {'employees': employees})
