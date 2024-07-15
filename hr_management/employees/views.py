@@ -1,6 +1,21 @@
 from django.shortcuts import render
+from django_datatables_view.base_datatable_view import BaseDatatableView
 
 from .models import Employee
+
+
+class EmployeeListJson(BaseDatatableView):
+    # Define the model you're querying from
+    model = Employee
+
+    # Define columns that you want to include
+    columns = ['first_name', 'last_name', 'email', 'department', 'hire_date']
+
+    # Define searchable columns
+    searchable_columns = ['first_name', 'last_name', 'email', 'department']
+
+    # Define orderable columns
+    order_columns = ['first_name', 'last_name', 'email', 'department', 'hire_date']
 
 
 def hierarchy_view(request):
@@ -14,6 +29,5 @@ def load_subordinates(request, employee_id):
     return render(request, 'employee_node.html', {'employees': subordinates})
 
 
-def employee_list_view(request):
-    employees = Employee.objects.all()
-    return render(request, 'employees/list.html', {'employees': employees})
+def employee_list(request):
+    return render(request, 'employee_list.html')
