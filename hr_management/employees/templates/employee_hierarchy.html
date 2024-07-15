@@ -23,7 +23,7 @@
                 return;
             }
             $.ajax({
-                    url: '/employees/load_subordinates/' + employeeId + '/',
+                    url: '/load_subordinates/' + employeeId + '/',
                     method: 'GET',
                     success: function(data) {
                        subordinatesList.html(data);
