@@ -1,12 +1,7 @@
-<!-- employees/templates/employees/hierarchy.html -->
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Employee Hierarchy</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-</head>
-<body>
+{% extends 'base.html' %}
+
+{% block content %}
+
     <div class="container">
         <h1>Employee Hierarchy</h1>
         <div id="hierarchy-tree">
@@ -15,11 +10,15 @@
         </div>
     </div>
     <script>
+
         $(document).ready(function() {
-            $('#hierarchy-tree .employee').click(function() {
+            $('#hierarchy-tree').on('click', '.employee', function() {
                 var employeeId = $(this).data('id');
                 console.log(employeeId);
                 var subordinatesList = $(this).next('.subordinates');
+                if (subordinatesList.html().trim() !== '') {
+                    return;
+                }
                 $.ajax({
                         url: '/employees/load_subordinates/' + employeeId + '/',
                         method: 'GET',
@@ -28,9 +27,6 @@
                         }
                 });
             });
-
-
         });
     </script>
-</body>
-</html>
+{% endblock %}

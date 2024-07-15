@@ -3,7 +3,7 @@
         <li>
             <span class="employee" data-id="{{ employee.id }}">{{ employee.first_name }} - {{ employee.position }}</span>
             <div class="subordinates">
-            {% if level < 3 and employee.subordinates.all %}
+            {% if level < 2 and employee.subordinates.all %}
                     {% include 'employee_node.html' with employees=employee.subordinates.all level=level|add:1 %}
             {% endif %}
             </div>

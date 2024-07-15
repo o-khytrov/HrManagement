@@ -1,5 +1,3 @@
-# employees/views.py
-from django.http import JsonResponse
 from django.shortcuts import render
 
 from .models import Employee
