@@ -5,19 +5,21 @@
 
 {% block content %}
 <h1>Employee List</h1>
+<div class="container-fluid">
 <table id="employeeTable" class="display">
     <thead>
         <tr>
             <th>First Name</th>
             <th>Last Name</th>
             <th>Email</th>
-            <th>Department</th>
             <th>Hire Date</th>
         </tr>
     </thead>
     <tbody>
     </tbody>
 </table>
+</div>
+
 <script>
     $(document).ready(function() {
         $('#employeeTable').DataTable({
@@ -28,9 +30,10 @@
                 {"data": "first_name"},
                 {"data": "last_name"},
                 {"data": "email"},
-                {"data": "department"},
-                {"data": "hire_date"}
-            ]
+                {"data": "date_of_hire"}
+            ],
+            "pageLength": 10,
+            "lengthMenu": [[10, 25, 50, 100], [10, 25, 50, 100]]
         });
     });
 </script>
