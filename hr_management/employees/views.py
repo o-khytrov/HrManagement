@@ -1,8 +1,7 @@
-from django.contrib.auth.decorators import login_required
+from django import forms
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django_datatables_view.base_datatable_view import BaseDatatableView
-from django import forms
 
 from .models import Employee
 
@@ -10,7 +9,7 @@ from .models import Employee
 class EmployeeForm(forms.ModelForm):
     class Meta:
         model = Employee
-        fields = ['first_name', 'last_name', 'position', 'date_of_hire', 'email']
+        fields = ['first_name', 'last_name', 'position', 'date_of_hire', 'email', 'id']
         widgets = {
             'first_name': forms.TextInput(attrs={'required': True}),
             'last_name': forms.TextInput(attrs={'required': True}),
@@ -25,13 +24,13 @@ class EmployeeListJson(BaseDatatableView):
     model = Employee
 
     # Define columns that you want to include
-    columns = ['first_name', 'last_name', 'email', 'department', 'hire_date']
+    columns = ['first_name', 'last_name', 'email', 'position', 'hire_date']
 
     # Define searchable columns
-    searchable_columns = ['first_name', 'last_name', 'email', 'department']
+    searchable_columns = ['first_name', 'last_name', 'email', 'position']
 
     # Define orderable columns
-    order_columns = ['first_name', 'last_name', 'email', 'department', 'hire_date']
+    order_columns = ['first_name', 'last_name', 'email', 'position', 'hire_date']
 
 
 def hierarchy_view(request):
@@ -54,27 +53,24 @@ def employee_create_view(request):
     form = EmployeeForm(request.POST or None)
     if form.is_valid():
         form.save()
-        return redirect('/employees/list')
+        return redirect('/employees')
     return render(request, 'employee_form.html', {'form': form})
 
 
-@login_required
+# @login_required
 def employee_update_view(request, pk):
     employee = Employee.objects.get(pk=pk)
     form = EmployeeForm(request.POST or None, instance=employee)
     if form.is_valid():
         form.save()
-        return redirect('employee_list')
-    return render(request, 'employees/employee_form.html', {'form': form})
+        return redirect('/employees')
+    return render(request, 'employee_form.html', {'form': form})
 
 
-@login_required
 def employee_delete_view(request, pk):
     employee = Employee.objects.get(pk=pk)
-    if request.method == 'POST':
-        employee.delete()
-        return redirect('employee_list')
-    return render(request, 'employees/employee_confirm_delete.html', {'employee': employee})
+    employee.delete()
+    return JsonResponse({})
 
 
 def employee_autocomplete(request):
