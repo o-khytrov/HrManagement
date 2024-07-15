@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django_datatables_view.base_datatable_view import BaseDatatableView
@@ -20,16 +21,12 @@ class EmployeeForm(forms.ModelForm):
 
 
 class EmployeeListJson(BaseDatatableView):
-    # Define the model you're querying from
     model = Employee
 
-    # Define columns that you want to include
     columns = ['first_name', 'last_name', 'email', 'position', 'hire_date']
 
-    # Define searchable columns
     searchable_columns = ['first_name', 'last_name', 'email', 'position']
 
-    # Define orderable columns
     order_columns = ['first_name', 'last_name', 'email', 'position', 'hire_date']
 
 
@@ -48,7 +45,16 @@ def employee_list(request):
     return render(request, 'employee_list.html')
 
 
-# @login_required
+def employee_autocomplete(request):
+    if 'query' in request.GET:
+        query = request.GET.get('query')
+        employees = Employee.objects.filter(last_name__icontains=query)[:10]
+        suggestions = list(employees.values('id', 'first_name', 'last_name'))
+        return JsonResponse(suggestions, safe=False)
+    return JsonResponse([], safe=False)
+
+
+@login_required
 def employee_create_view(request):
     form = EmployeeForm(request.POST or None)
     if form.is_valid():
@@ -57,7 +63,7 @@ def employee_create_view(request):
     return render(request, 'employee_form.html', {'form': form})
 
 
-# @login_required
+@login_required
 def employee_update_view(request, pk):
     employee = Employee.objects.get(pk=pk)
     form = EmployeeForm(request.POST or None, instance=employee)
@@ -67,16 +73,8 @@ def employee_update_view(request, pk):
     return render(request, 'employee_form.html', {'form': form})
 
 
+@login_required
 def employee_delete_view(request, pk):
     employee = Employee.objects.get(pk=pk)
     employee.delete()
     return JsonResponse({})
-
-
-def employee_autocomplete(request):
-    if 'query' in request.GET:
-        query = request.GET.get('query')
-        employees = Employee.objects.filter(last_name__icontains=query)[:10]
-        suggestions = list(employees.values('id', 'first_name', 'last_name'))
-        return JsonResponse(suggestions, safe=False)
-    return JsonResponse([], safe=False)

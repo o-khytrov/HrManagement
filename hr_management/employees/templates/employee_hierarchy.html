@@ -1,32 +1,35 @@
 {% extends 'base.html' %}
 
+{% block header %}
+  {% include 'header.html' %}
+{% endblock %}
+
 {% block content %}
 
-    <div class="container">
-        <h1>Employee Hierarchy</h1>
-        <div id="hierarchy-tree">
-            {% include 'employee_node.html' with employees=top_managers level=0 %}
-        </div>
-        </div>
+<div class="container">
+    <h1>Employee Hierarchy</h1>
+    <div id="hierarchy-tree">
+        {% include 'employee_node.html' with employees=top_managers level=0 %}
     </div>
-    <script>
-
-        $(document).ready(function() {
-            $('#hierarchy-tree').on('click', '.employee', function() {
-                var employeeId = $(this).data('id');
-                console.log(employeeId);
-                var subordinatesList = $(this).next('.subordinates');
-                if (subordinatesList.html().trim() !== '') {
-                    return;
-                }
-                $.ajax({
-                        url: '/employees/load_subordinates/' + employeeId + '/',
-                        method: 'GET',
-                        success: function(data) {
-                           subordinatesList.html(data);
-                        }
-                });
+</div>
+</div>
+<script>
+    $(document).ready(function() {
+        $('#hierarchy-tree').on('click', '.employee', function() {
+            var employeeId = $(this).data('id');
+            console.log(employeeId);
+            var subordinatesList = $(this).next('.subordinates');
+            if (subordinatesList.html().trim() !== '') {
+                return;
+            }
+            $.ajax({
+                    url: '/employees/load_subordinates/' + employeeId + '/',
+                    method: 'GET',
+                    success: function(data) {
+                       subordinatesList.html(data);
+                    }
             });
         });
-    </script>
+    });
+</script>
 {% endblock %}
