@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Employee</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/corejs-typeahead/1.3.1/typeahead.bundle.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h2>Create Employee</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="form-group">
+                <label for="id_manager">Manager</label>
+                <input type="text" id="id_manager" class="form-control typeahead">
+                <input type="hidden" id="id_manager_id" name="manager">
+                <input type="text" id="manager_full_name" style="display:none;">
+            </div>
+            <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+    </div>
+    <script>
+        $(document).ready(function() {
+            var employees = new Bloodhound({
+                datumTokenizer: Bloodhound.tokenizers.obj.whitespace('full_name'),
+                queryTokenizer: Bloodhound.tokenizers.whitespace,
+                remote: {
+                    url: '/employees/employee_autocomplete/?query=%QUERY',
+                    wildcard: '%QUERY'
+                }
+            });
+
+
+            $('#id_manager').typeahead({
+                hint: true,
+                highlight: true,
+                minLength: 1
+            }, {
+                name: 'employees',
+                display: function(employee) {
+                    return employee.first_name + ' ' + employee.last_name;
+                },
+                source: employees
+            }).on('typeahead:select', function(ev, suggestion) {
+                $('#id_manager_id').val(suggestion.id);
+                $('#manager_full_name').val(suggestion.first_name + ' ' + suggestion.last_name);
+                $('#manager_full_name').show()
+                $('#id_manager').hide();
+            });
+
+            $("#manager_full_name").on('click',function() {
+              $('#manager_full_name').hide()
+              $('#id_manager').show();
+            })
+        });
+    </script>
+</body>
+</html>
