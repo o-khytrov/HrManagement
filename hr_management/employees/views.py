@@ -15,7 +15,7 @@ class EmployeeForm(forms.ModelForm):
             'first_name': forms.TextInput(attrs={'required': True}),
             'last_name': forms.TextInput(attrs={'required': True}),
             'position': forms.TextInput(attrs={'required': True}),
-            'date_hired': forms.DateInput(attrs={'type': 'date', 'required': True}),
+            'date_of_hire': forms.DateInput(attrs={'type': 'date', 'required': True}),
             'email': forms.EmailInput(attrs={'required': True}),
         }
 
@@ -54,7 +54,7 @@ def employee_create_view(request):
     form = EmployeeForm(request.POST or None)
     if form.is_valid():
         form.save()
-        return redirect('employees/list')
+        return redirect('/employees/list')
     return render(request, 'employee_form.html', {'form': form})
 
 
