@@ -16,10 +16,15 @@
         {% csrf_token %}
         {{ form.as_p }}
         <div class="form-group">
+            <input type="hidden" id="manager_id" name="manager" value="{{ form.instance.manager.id }}">
             <label for="id_manager">Manager</label>
+            {% if form.instance.manager %}
+            <input type="text" id="id_manager" class="form-control typeahead" style="display:none;">
+            <input type="text" id="manager_full_name" value="{{ form.instance.manager }}">
+            {% else %}
             <input type="text" id="id_manager" class="form-control typeahead">
-            <input type="hidden" id="id_manager_id" name="manager">
             <input type="text" id="manager_full_name" style="display:none;">
+            {% endif %}
         </div>
         <button type="submit" class="btn btn-primary">Save</button>
     </form>
@@ -46,7 +51,7 @@
             },
             source: employees
         }).on('typeahead:select', function(ev, suggestion) {
-            $('#id_manager_id').val(suggestion.id);
+            $('#manager_id').val(suggestion.id);
             $('#manager_full_name').val(suggestion.first_name + ' ' + suggestion.last_name);
             $('#manager_full_name').show()
             $('#id_manager').hide();

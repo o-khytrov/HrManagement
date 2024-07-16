@@ -66,9 +66,15 @@ def employee_create_view(request):
 
 @login_required
 def employee_update_view(request, pk):
-    employee = Employee.objects.get(pk=pk)
+    employee = Employee.objects.select_related('manager').get(pk=pk)
     form = EmployeeForm(request.POST or None, instance=employee)
     if form.is_valid():
+        manager_id = request.POST.get('manager')
+        if manager_id:
+            manager = Employee.objects.get(pk=manager_id)
+            employee.manager = manager
+        else:
+            employee.manager = None
         form.save()
         return redirect("employee_list")
     return render(request, 'employee_form.html', {'form': form})
