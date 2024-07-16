@@ -6,8 +6,13 @@
 
 {% block content %}
 <div class="container">
+    {% if form.instance.id %}
+    <h2>Update Employee</h2>
+    {% else %}
     <h2>Create Employee</h2>
-    <form method="post">
+    {% endif %}
+    <form method="post"
+          action="{% if form.instance.id %}{% url 'employee_update' form.instance.id %}{% else %}{% url 'employee_create' %}{% endif %}">
         {% csrf_token %}
         {{ form.as_p }}
         <div class="form-group">

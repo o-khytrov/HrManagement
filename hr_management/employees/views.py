@@ -12,6 +12,7 @@ class EmployeeForm(forms.ModelForm):
         model = Employee
         fields = ['first_name', 'last_name', 'position', 'date_of_hire', 'email', 'id']
         widgets = {
+            'id': forms.TextInput(attrs={'required': False}),
             'first_name': forms.TextInput(attrs={'required': True}),
             'last_name': forms.TextInput(attrs={'required': True}),
             'position': forms.TextInput(attrs={'required': True}),
@@ -59,7 +60,7 @@ def employee_create_view(request):
     form = EmployeeForm(request.POST or None)
     if form.is_valid():
         form.save()
-        return redirect('/employees')
+        return redirect("employee_list")
     return render(request, 'employee_form.html', {'form': form})
 
 
@@ -69,7 +70,7 @@ def employee_update_view(request, pk):
     form = EmployeeForm(request.POST or None, instance=employee)
     if form.is_valid():
         form.save()
-        return redirect('/employees')
+        return redirect("employee_list")
     return render(request, 'employee_form.html', {'form': form})
 
 
