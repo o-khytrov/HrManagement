@@ -23,11 +23,11 @@ class EmployeeForm(forms.ModelForm):
 class EmployeeListJson(BaseDatatableView):
     model = Employee
 
-    columns = ['first_name', 'last_name', 'email', 'position', 'hire_date']
+    columns = ['id', 'first_name', 'last_name', 'email', 'position', 'date_of_hire']
 
     searchable_columns = ['first_name', 'last_name', 'email', 'position']
 
-    order_columns = ['first_name', 'last_name', 'email', 'position', 'hire_date']
+    order_columns = ['first_name', 'last_name', 'email', 'position', 'date_of_hire']
 
 
 def hierarchy_view(request):
