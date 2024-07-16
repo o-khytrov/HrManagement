@@ -27,7 +27,7 @@
             datumTokenizer: Bloodhound.tokenizers.obj.whitespace('full_name'),
             queryTokenizer: Bloodhound.tokenizers.whitespace,
             remote: {
-                url: '/employees/employee_autocomplete/?query=%QUERY',
+                url: '/employee_autocomplete/?query=%QUERY',
                 wildcard: '%QUERY'
             }
         });
